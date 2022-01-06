@@ -177,7 +177,7 @@ public class board_control : MonoBehaviour
         for (int i = 0; i < 3; i++) {
             int row = Random.Range(0,8);
             int col = Random.Range(0,8);
-            int type = Random.Range(1,cell_type.Length);
+            int type = Random.Range(Controller.instance.diff,7);
             while(board_data[row, col] != 0) {
                 row = Random.Range(0, 8);
                 col = Random.Range(0, 8);
