@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6320506980016477580}
   - component: {fileID: 1279201028263433107}
   - component: {fileID: 2719878006186327468}
-  - component: {fileID: 4891508517760473776}
   m_Layer: 0
   m_Name: BlueBall
   m_TagString: Untagged
@@ -97,16 +96,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &4891508517760473776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6473483437490255641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e95bc4cc34bcece45a1b65b4dff379bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eff: {fileID: 4878268673114885478, guid: 8b3a058282021b64b9b04cda3b46eaa8, type: 3}

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5237859198145974116}
   - component: {fileID: 416695882356161305}
   - component: {fileID: 3684420387432899133}
-  - component: {fileID: 729056462057959060}
   m_Layer: 0
   m_Name: CyanBall
   m_TagString: Untagged
@@ -97,16 +96,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &729056462057959060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8791951416270850568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e95bc4cc34bcece45a1b65b4dff379bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eff: {fileID: 4263873415079510359, guid: f717a56ad15db8c4cbeeb70d3de71bbe, type: 3}

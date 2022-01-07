@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1971403346674260779}
   - component: {fileID: 5178986152676257232}
   - component: {fileID: 2546355746540711437}
-  - component: {fileID: 5482517628633855235}
   m_Layer: 0
   m_Name: GreenBall
   m_TagString: Untagged
@@ -97,16 +96,3 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &5482517628633855235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5420607746521419304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e95bc4cc34bcece45a1b65b4dff379bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eff: {fileID: 6118666289682686562, guid: 84112533390f7144bb7dd05a969f7c24, type: 3}

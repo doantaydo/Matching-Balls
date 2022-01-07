@@ -8,7 +8,7 @@ public class board_control : MonoBehaviour
     public GameObject[] cell_type;
     GameObject[,] board_obj;
     int[,] board_data;
-    bool isFirstGame, isPicked;
+    bool isFirstGame, isPicked, isUpdate;
     int row_1, col_1;
 
     void Start() {
@@ -19,6 +19,7 @@ public class board_control : MonoBehaviour
 
         isFirstGame = true;
         isPicked = false;
+        isUpdate = false;
 
         resetBoard();
     }
@@ -97,6 +98,7 @@ public class board_control : MonoBehaviour
         FIND ALL MATCHING PLACE AND DELETE, ADD SCORE
     */
     void checkMatching() {
+        bool useBoom = false;
         int[,] list_delete = new int[81,2];
         bool loop = false;
         int size = 0;
@@ -104,6 +106,7 @@ public class board_control : MonoBehaviour
             for (int col = 0; col < 9; col++) {
                 int type = board_data[row, col];
                 if (type == 15) {
+                    useBoom = true;
                 // if match ball after move
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
@@ -150,11 +153,18 @@ public class board_control : MonoBehaviour
                 }
             }
         }
+        if(size > 0) {
+            if (useBoom) Sound_Control.instance.boom();
+            else Sound_Control.instance.deleteBall();
+            waitting(1);
+        }
         for (int i = 0; i < size; i++) {
             updateBoard(list_delete[i,0], list_delete[i,1], 0);
         }
         Score_Control.instance.getScore(size);
-        if (loop) checkMatching();
+        if (loop) {
+            checkMatching();
+        }
     }
     bool haveInList(int[,] list_delete, int row, int col, int size) {
         for (int i = 0; i < size; i++) {
@@ -214,8 +224,10 @@ public class board_control : MonoBehaviour
         PICK A BALL AND GO TO ANOTHER
     */
     public void pickCell(int col, int row) {
+        if (isUpdate) return;
         if (isPicked) {
             if (board_data[row, col] != 0) {
+                Sound_Control.instance.pick();
                 board_obj[row_1, col_1].GetComponent<cell>().notSelect();
                 row_1 = row;
                 col_1 = col;
@@ -228,23 +240,42 @@ public class board_control : MonoBehaviour
                     updateBoard(row, col, board_data[row_1, col_1]);
                     updateBoard(row_1, col_1, 0);
                     if (board_data[row, col] == 7) board_data[row, col] = 15;
+                    Sound_Control.instance.move();
                     checkMatching();
+                    waitting(1);
                     getQueueBall();
                     // delete list ball if match after
                     checkMatching();
+                    isUpdate = false;
                 }
                 else board_obj[row_1, col_1].GetComponent<cell>().notSelect();
                 
-
                 isPicked = false;
             }
         }
         else {
             if (board_data[row, col] != 0) {
+                Sound_Control.instance.pick();
                 isPicked = true;
                 row_1 = row;
                 col_1 = col;
-                board_obj[row, col].GetComponent<cell>().Select();
+                board_obj[row, col].GetComponent<cell>().Select(); 
+            }
+        }
+    }
+    /*
+        WAITTING FUNCTION
+    */
+    void waitting(int sec) {
+        return;
+        // WAITTING ...
+        float start_time = Time.time;
+        Debug.Log("Start: " + start_time);
+        while(true) {
+            float time = Time.time;
+            if (sec < time - start_time) {
+                Debug.Log("End: " + time);
+                break;
             }
         }
     }
