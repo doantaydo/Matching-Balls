@@ -73,4 +73,7 @@ public class Controller : MonoBehaviour
         for (int i = 0; i < button.Length; i++)
             button[i].SetActive(true);
     }
+    public void ExitGame() {
+        Application.Quit();
+    }
 }

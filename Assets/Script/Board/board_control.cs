@@ -84,7 +84,6 @@ public class board_control : MonoBehaviour
         queue_Ball.instance.printBall();
         checkMatching();
         if (checkFull()) {
-            Debug.Log("GameOver");
             Controller.instance.isGameOver = true;
         }
     }
@@ -107,6 +106,8 @@ public class board_control : MonoBehaviour
                 int type = board_data[row, col];
                 if (type == 15) {
                     useBoom = true;
+                    Effect_Control.instance.makeBoomEffect(getCol(col), getRow(row));
+                    Sound_Control.instance.boom();
                 // if match ball after move
                     for (int i = -1; i < 2; i++)
                         for (int j = -1; j < 2; j++)
@@ -118,6 +119,7 @@ public class board_control : MonoBehaviour
                                 }
                                 else if (board_data[row + i, col + j] != 0) {
                                     if (!haveInList(list_delete, row + i, col + j, size)) {
+                                        Effect_Control.instance.makeDeleteBallEffect(board_data[row + i, col + j], getCol(col + j), getRow(row + i));
                                         list_delete[size, 0] = row + i;
                                         list_delete[size, 1] = col + j;
                                         size++;
@@ -132,11 +134,11 @@ public class board_control : MonoBehaviour
                             if (!(next_row == 0 && next_col == 0)) {
                                 int max = findNext(row, col, next_row, next_col, 1);
                                 if (max >= 5) {
-                                    Debug.Log("Find: " + row + " " + col + " : " + type + " : " + max);
                                     int now_row = row;
                                     int now_col = col;
                                     while(max != 0) {
                                         if(!haveInList(list_delete, now_row, now_col, size)) {
+                                            Effect_Control.instance.makeDeleteBallEffect(board_data[now_row, now_col], getCol(now_col), getRow(now_row));
                                             list_delete[size, 0] = now_row;
                                             list_delete[size, 1] = now_col;
                                             size++;
@@ -154,8 +156,7 @@ public class board_control : MonoBehaviour
             }
         }
         if(size > 0) {
-            if (useBoom) Sound_Control.instance.boom();
-            else Sound_Control.instance.deleteBall();
+            if (!useBoom) Sound_Control.instance.deleteBall();
             waitting(1);
         }
         for (int i = 0; i < size; i++) {
@@ -212,7 +213,6 @@ public class board_control : MonoBehaviour
     }
     void updateBoard(int row, int col, int type) {
         if (!checkValue(row) || !checkValue(col)) {
-            Debug.Log(row + " " + col);
             return;
         }
         board_data[row, col] = type;
@@ -270,11 +270,9 @@ public class board_control : MonoBehaviour
         return;
         // WAITTING ...
         float start_time = Time.time;
-        Debug.Log("Start: " + start_time);
         while(true) {
             float time = Time.time;
             if (sec < time - start_time) {
-                Debug.Log("End: " + time);
                 break;
             }
         }
@@ -283,18 +281,23 @@ public class board_control : MonoBehaviour
         CHECK CAN MOVE WITH BFS
     */
     bool checkCanMove(int start_row, int start_col, int end_row, int end_col) {
-        if (board_data[start_row, start_col] == 8) return true;
+        if (board_data[start_row, start_col] == 8) {
+            return true;
+        }
+
         if (start_col == end_col && start_row == end_row)
             return true;
 
-        int[,] visited = new int[81,2];
+        int[,] visited = new int[81,3];
         for (int i = 0; i < 81; i++) {
             visited[i,0] = -1;
             visited[i,1] = -1;
+            visited[i,2] = -1;
         }
 
         visited[0,0] = start_row;
         visited[0,1] = start_col;
+        visited[0,2] = -1;
 
         int row, col;
         int count = 0;
@@ -303,7 +306,6 @@ public class board_control : MonoBehaviour
         while(count < size && count < 80) {
             row = visited[count,0];
             col = visited[count,1];
-            count++;
             if (row == -1) break;
             if (row == end_row && col == end_col) return true;
             int off_col, off_row;
@@ -312,9 +314,13 @@ public class board_control : MonoBehaviour
             off_col = 0;
             if (checkEmpty(row + off_row, col + off_col))
                 if (!find_visited(visited, row + off_row, col + off_col)) {
-                    if (row + off_row == end_row && col + off_col == end_col) return true;
+                    if (row + off_row == end_row && col + off_col == end_col) {
+                        makeLineMove(visited, count);
+                        return true;
+                    }
                     visited[size,0] = row + off_row;
                     visited[size,1] = col + off_col;
+                    visited[size,2] = count;
                     size++;
                 }
             // 0 1
@@ -322,9 +328,13 @@ public class board_control : MonoBehaviour
             off_col = 1;
             if (checkEmpty(row + off_row, col + off_col))
                 if (!find_visited(visited, row + off_row, col + off_col)) {
-                    if (row + off_row == end_row && col + off_col == end_col) return true;
+                    if (row + off_row == end_row && col + off_col == end_col) {
+                        makeLineMove(visited, count);
+                        return true;
+                    }
                     visited[size,0] = row + off_row;
                     visited[size,1] = col + off_col;
+                    visited[size,2] = count;
                     size++;
                 }
             // -1 0
@@ -332,9 +342,13 @@ public class board_control : MonoBehaviour
             off_col = 0;
             if (checkEmpty(row + off_row, col + off_col))
                 if (!find_visited(visited, row + off_row, col + off_col)) {
-                    if (row + off_row == end_row && col + off_col == end_col) return true;
+                    if (row + off_row == end_row && col + off_col == end_col) {
+                        makeLineMove(visited, count);
+                        return true;
+                    }
                     visited[size,0] = row + off_row;
                     visited[size,1] = col + off_col;
+                    visited[size,2] = count;
                     size++;
                 }
             // 0 -1
@@ -342,15 +356,27 @@ public class board_control : MonoBehaviour
             off_col = -1;
             if (checkEmpty(row + off_row, col + off_col))
                 if (!find_visited(visited, row + off_row, col + off_col)) {
-                    if (row + off_row == end_row && col + off_col == end_col) return true;
+                    if (row + off_row == end_row && col + off_col == end_col) {
+                        makeLineMove(visited, count);
+                        return true;
+                    }
                     visited[size,0] = row + off_row;
                     visited[size,1] = col + off_col;
+                    visited[size,2] = count;
                     size++;
-                } 
+                }
+            count++;
         }
-        if (count > 81) Debug.Log("infinity loop");
-        Debug.Log("CANNOT" + size);
         return false;
+    }
+    void makeLineMove(int[,] visited, int end) {
+        //Effect_Control.instance.makeMoveBallEffect(getCol(visited[end, 1]), getRow(visited[end, 0]));
+        int loop = 0;
+        while (end != -1 && loop < 81) {
+            Effect_Control.instance.makeMoveBallEffect(getCol(visited[end,1]), getRow(visited[end,0]));
+            end = visited[end,2];
+            loop++;
+        }
     }
     bool checkEmpty(int row, int col) {
         if (checkValue(row) && checkValue(col))
