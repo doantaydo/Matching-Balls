@@ -282,6 +282,8 @@ public class board_control : MonoBehaviour
     */
     bool checkCanMove(int start_row, int start_col, int end_row, int end_col) {
         if (board_data[start_row, start_col] == 8) {
+            //Effect_Control.instance.makeMoveGhostBallEffect(start_col, start_row, end_col, end_row);
+            Effect_Control.instance.makeMoveGhostBallEffect(getCol(start_col),getRow(start_row),getCol(end_col),getRow(end_row));
             return true;
         }
 

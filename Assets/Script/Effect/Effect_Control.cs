@@ -7,7 +7,6 @@ public class Effect_Control : MonoBehaviour
     public GameObject boomEffect;
     public GameObject[] deleteBallEffect;
     public GameObject moveBallEffect;
-    public GameObject moveGhostEffect;
     public static Effect_Control instance;
     void Start() {
         if (instance == null) instance = this;    
@@ -22,7 +21,7 @@ public class Effect_Control : MonoBehaviour
     public void makeMoveBallEffect(float col, float row) {
         Instantiate(moveBallEffect, new Vector3(col, row, 0f), transform.rotation);
     }
-    public void makeMoveGhostBallEffect(float col, float row) {
-        Instantiate(moveGhostEffect, new Vector3(col, row, 0f), transform.rotation);
+    public void makeMoveGhostBallEffect(float start_col, float start_row, float end_col, float end_row) {
+        line_control.instance.setPoint(start_row, start_col, end_row, end_col);
     }
 }
